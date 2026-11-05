@@ -1,0 +1,8 @@
+{
+  "name": "Employee Booking & Allocation System",
+  "description": "ระบบจัดสรรและยืมตัวกำลังพลระหว่างกองงาน พร้อมการตรวจสอบสิทธิ์ อนุมัติ และป้องกันการจองซ้ำ",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
