@@ -533,7 +533,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-5 h-3 rounded-full bg-rose-600 inline-block"></span>
-            <span className="text-rose-800 font-medium">สีแดง ('จ') = จองแล้ว (มีชื่อภารกิจกำกับเหนือ toggle)</span>
+            <span className="text-rose-800 font-medium">สีแดง ('จ') = จองแล้ว </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-3.5 rounded bg-amber-100 border border-amber-300 inline-block"></span>

@@ -245,7 +245,6 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
               <div>
                 <span className="font-bold">การจองใช้ภายในกองงานเดียวกัน:</span> คำขอนี้จะได้รับ
                 <strong className="text-emerald-900"> อนุมัติอัตโนมัติทันที </strong>
-                เมื่อทำการส่งคำขอ โดยไม่ต้องรอการพิจารณาจากแอดมินภายนอก
               </div>
             </div>
           ) : (
