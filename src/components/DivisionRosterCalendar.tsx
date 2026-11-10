@@ -253,7 +253,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                   ปฏิทินสรุปยอดภาพรวมสถานภาพกำลังพล
                 </h3>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-bold">
-                  ด/ป {month} {year}
+                  เดือน {month} ปี {year}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
