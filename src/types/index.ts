@@ -102,14 +102,26 @@ export interface EmployeeBookingReservation {
   is_direct_admin_booking?: boolean;
 }
 
-export interface CreateBookingRequestInput {
+export interface CreateBookingItemPayload {
+  employee_code: string;
+  employee_name_snapshot: string;
+}
+
+export interface CreateBookingPayload {
   requesting_division_id: number;
   source_division_id: number;
   purpose: string;
   booking_date: string;
   end_date?: string | null;
-  items: {
-    employee_code: string;
-    employee_name_snapshot: string;
-  }[];
+  items: CreateBookingItemPayload[];
 }
+
+export type CreateBookingRequestInput = CreateBookingPayload;
+
+export type ReviewAction = 'ACCEPT' | 'REJECT';
+
+export interface ReviewBookingItemPayload {
+  action: ReviewAction;
+  note: string;
+}
+

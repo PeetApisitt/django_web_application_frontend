@@ -61,57 +61,57 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     bgClass: 'bg-slate-50'
   };
 
-  const handleActionSubmit = () => {
+  const handleActionSubmit = async () => {
     setActionError(null);
     setActionSuccess(null);
     try {
-      submitBooking(booking.id);
+      await submitBooking(booking.id);
       setActionSuccess(
         isInternal
           ? 'ส่งคำขอสำเร็จ! ระบบได้อนุมัติอัตโนมัติเนื่องจากเป็นการจองใช้ภายในกองงานเดียวกัน'
           : 'ส่งคำขอสำเร็จแล้ว ขณะนี้รอการพิจารณาจากแอดมินกองงานต้นสังกัด'
       );
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการส่งคำขอ');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการส่งคำขอ');
     }
   };
 
-  const handleActionCancel = () => {
+  const handleActionCancel = async () => {
     if (!window.confirm('คุณต้องการยกเลิกคำขอนี้ใช่หรือไม่? ระบบจะปลดการจองกำลังพลทั้งหมดทันที')) {
       return;
     }
     setActionError(null);
     setActionSuccess(null);
     try {
-      cancelBooking(booking.id);
+      await cancelBooking(booking.id);
       setActionSuccess('ยกเลิกคำขอเรียบร้อยแล้ว');
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการยกเลิกคำขอ');
     }
   };
 
-  const handleDeleteDraft = () => {
+  const handleDeleteDraft = async () => {
     if (!window.confirm('คุณต้องการลบคำขอร่างนี้ใช่หรือไม่?')) return;
     try {
-      deleteDraftBooking(booking.id);
+      await deleteDraftBooking(booking.id);
       onClose();
     } catch (err: any) {
-      setActionError(err.message || 'ไม่สามารถลบคำขอได้');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'ไม่สามารถลบคำขอได้');
     }
   };
 
-  const handleAcceptItem = (item: BookingRequestItem) => {
+  const handleAcceptItem = async (item: BookingRequestItem) => {
     setActionError(null);
     setActionSuccess(null);
     try {
-      reviewItem(item.id, 'ACCEPT', '');
+      await reviewItem(item.id, 'ACCEPT', '');
       setActionSuccess(`อนุมัติกำลังพล ${item.employee_name_snapshot} เรียบร้อยแล้ว`);
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการพิจารณา');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการพิจารณา');
     }
   };
 
-  const handleConfirmReject = () => {
+  const handleConfirmReject = async () => {
     if (!rejectingItemId) return;
     if (!rejectNote.trim()) {
       setActionError('กรุณาระบุหมายเหตุ/เหตุผลในการปฏิเสธ');
@@ -119,12 +119,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     }
 
     try {
-      reviewItem(rejectingItemId, 'REJECT', rejectNote);
+      await reviewItem(rejectingItemId, 'REJECT', rejectNote);
       setActionSuccess('ปฏิเสธรายการกำลังพลและคืนสิทธิ์การจองแล้ว');
       setRejectingItemId(null);
       setRejectNote('');
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการปฏิเสธ');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการปฏิเสธ');
     }
   };
 

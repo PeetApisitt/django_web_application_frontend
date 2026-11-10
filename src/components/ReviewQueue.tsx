@@ -55,18 +55,18 @@ export const ReviewQueue: React.FC<ReviewQueueProps> = ({ onSelectBooking }) => 
     return list;
   }, [bookings, currentUser, roleAssignments]);
 
-  const handleAccept = (item: BookingRequestItem) => {
+  const handleAccept = async (item: BookingRequestItem) => {
     setActionError(null);
     setActionSuccess(null);
     try {
-      reviewItem(item.id, 'ACCEPT', '');
+      await reviewItem(item.id, 'ACCEPT', '');
       setActionSuccess(`อนุมัติกำลังพล ${item.employee_name_snapshot} (${item.employee_code}) เรียบร้อยแล้ว`);
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการพิจารณา');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการพิจารณา');
     }
   };
 
-  const handleConfirmReject = () => {
+  const handleConfirmReject = async () => {
     if (!rejectingItem) return;
     if (!rejectNote.trim()) {
       setActionError('กรุณาระบุหมายเหตุหรือเหตุผลในการปฏิเสธ');
@@ -74,12 +74,12 @@ export const ReviewQueue: React.FC<ReviewQueueProps> = ({ onSelectBooking }) => 
     }
 
     try {
-      reviewItem(rejectingItem.id, 'REJECT', rejectNote);
+      await reviewItem(rejectingItem.id, 'REJECT', rejectNote);
       setActionSuccess(`ปฏิเสธกำลังพล ${rejectingItem.name} และคืนสิทธิ์การจองแล้ว`);
       setRejectingItem(null);
       setRejectNote('');
     } catch (err: any) {
-      setActionError(err.message || 'เกิดข้อผิดพลาดในการปฏิเสธ');
+      setActionError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการปฏิเสธ');
     }
   };
 

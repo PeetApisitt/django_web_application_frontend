@@ -112,7 +112,7 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
     setSelectedEmployees(prev => prev.filter(item => item.employee_code !== code));
   };
 
-  const handleSubmit = (shouldAutoSubmit: boolean) => {
+  const handleSubmit = async (shouldAutoSubmit: boolean) => {
     setError(null);
 
     if (!purpose.trim()) {
@@ -149,18 +149,18 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
         }))
       };
 
-      const newBooking = createBooking(payload);
+      const newBooking = await createBooking(payload);
 
-      if (shouldAutoSubmit) {
-        submitBooking(newBooking.id);
+      if (shouldAutoSubmit && newBooking?.id) {
+        await submitBooking(newBooking.id);
       }
 
       onClose();
-      if (onSelectBooking) {
+      if (onSelectBooking && newBooking?.id) {
         onSelectBooking(newBooking.id);
       }
     } catch (err: any) {
-      setError(err.message || 'เกิดข้อผิดพลาดในการสร้างคำขอ');
+      setError(err.response?.data?.detail || err.response?.data?.message || err.message || 'เกิดข้อผิดพลาดในการสร้างคำขอ');
     } finally {
       setIsSubmitting(false);
     }
