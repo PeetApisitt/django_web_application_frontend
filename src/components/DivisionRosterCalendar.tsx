@@ -310,7 +310,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                 title="สร้างคำขอยืมตัวกำลังพลจากกองงานนี้"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">ขอยืมตัวจากกองนี้</span>
+                <span className="hidden sm:inline">ขอยืมกำลังพลจากกองนี้</span>
               </button>
             )}
           </div>
