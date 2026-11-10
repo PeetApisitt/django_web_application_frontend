@@ -235,7 +235,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
     };
   }, [divisionEmployees, reservations, year, month, monthDays]);
 
-  const presetMissions = ['งานงบประมาณ', 'ว.กพ', 'ว.บก', 'ตรวจราชการ', 'ช่วยราชการ', 'ฝกพ', 'ภารกิจพิเศษ', 'เวรประจำวัน'];
+  const presetMissions = ['งานงบประมาณ', 'ภารกิจพิเศษ', 'ว.กพ', 'ว.บก', 'ฝกพ'];
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden space-y-0">
@@ -257,7 +257,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                ตารางจัดสรรเวรปฏิบัติหน้าที่และการจองใช้กำลังพลรายวันตามแบบฟอร์มกองทัพ
+                ตารางจัดสรรเวรปฏิบัติหน้าที่และการจองใช้กำลังพลรายวัน
               </p>
             </div>
           </div>

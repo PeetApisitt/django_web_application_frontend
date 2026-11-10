@@ -198,7 +198,7 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
             </div>
 
             <div className="text-[11px] text-slate-400">
-              * การกันสิทธิ์เกิดขึ้นอัตโนมัติเมื่อมีการส่งคำขอ หรือเมื่อแอดมินกองงานกดจอง toggle ในปฏิทินด้านบน
+              * การกันสิทธิ์เกิดขึ้นอัตโนมัติเมื่อมีการส่งคำขอ หรือเมื่อแอดมินกองงานกดจองในปฏิทินด้านบน
             </div>
           </div>
         </div>
