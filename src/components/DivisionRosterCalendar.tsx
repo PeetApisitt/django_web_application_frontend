@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { Employee, Division } from '../types';
 import { canUserManageDivision } from '../services/bookingService';
+import { formatThaiDate, formatThaiMonthYear, toBuddhistYear } from '../utils/dateFormatter';
 import {
   Calendar as CalendarIcon,
   Building2,
@@ -62,7 +63,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
     isCurrentlyReserved: false
   });
 
-  const [missionNoteInput, setMissionNoteInput] = useState<string>('งานงบประมาณ');
+  const [missionNoteInput, setMissionNoteInput] = useState<string>('เวร กพ.');
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
   const activeDivision = getDivisionById(selectedDivisionId) || divisions[0];
@@ -147,6 +148,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
 
     if (existing) {
       // Prompt to release
+      setMissionNoteInput(existing.mission_note || 'เวร กพ.');
       setPromptState({
         isOpen: true,
         employee: emp,
@@ -158,7 +160,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
       });
     } else {
       // Prompt to reserve with mission note
-      setMissionNoteInput('ว.กพ');
+      setMissionNoteInput('เวร กพ.');
       setPromptState({
         isOpen: true,
         employee: emp,
@@ -235,7 +237,30 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
     };
   }, [divisionEmployees, reservations, year, month, monthDays]);
 
-  const presetMissions = ['งานงบประมาณ', 'ภารกิจพิเศษ', 'ว.กพ', 'ว.บก', 'ฝกพ'];
+  const presetMissions = [
+    "เวร กพ.",
+    "เวร บก.",
+    "ฝกพ.",
+    "ไปราชการ",
+    "ลาป่วย",
+    "ลากิจ",
+    "ลาพักผ่อน",
+    "ลาบวช",
+    "ลาคลอด",
+    "ศึกษา",
+    "ขาดราชการ",
+    "พิธีฮัจย์",
+    "วันตรุษอิสลาม",
+    "ต้องโทษ",
+    "พักราชการ",
+    "ติดตามคู่สมรส",
+    "หนีราชการ",
+    "ลาพักก่อนเกษียณ",
+    "รอจำหน่าย",
+    "ลาช่วยภริยาที่คลอดบุตร",
+    "ปฏิบัติงานพิเศษ",
+    "ป่วย (พักฟื้น)"
+  ];
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden space-y-0">
@@ -253,7 +278,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                   ปฏิทินสรุปยอดภาพรวมสถานภาพกำลังพล
                 </h3>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-bold">
-                  เดือน {month} ปี {year}
+                  เดือน {month} ปี พ.ศ. {toBuddhistYear(year)}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -291,7 +316,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
               <div className="px-2.5 font-semibold text-slate-200">
-                {month === 10 ? 'ตุลาคม' : month === 11 ? 'พฤศจิกายน' : month === 12 ? 'ธันวาคม' : `เดือน ${month}`} {year}
+                {formatThaiMonthYear(year, month)}
               </div>
               <button
                 onClick={handleNextMonth}
@@ -581,7 +606,7 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                 <div className="flex justify-between">
                   <span className="text-slate-500">วันที่:</span>
                   <span className="font-bold text-slate-800">
-                    {promptState.dayName} ที่ {promptState.dayNum} ({promptState.date})
+                    {promptState.dayName} ที่ {promptState.dayNum} ({formatThaiDate(promptState.date)})
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -605,35 +630,19 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                     ระบุชื่อภารกิจที่ใช้ชื่อกำลังพล (จะแสดงเหนือ Toggle สีแดง):
                   </label>
 
-                  {/* Preset Buttons */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {presetMissions.map(m => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => setMissionNoteInput(m)}
-                        className={`px-2 py-1 text-[11px] rounded-md border transition-all ${
-                          missionNoteInput === m
-                            ? 'bg-rose-50 border-rose-300 text-rose-700 font-bold ring-1 ring-rose-400'
-                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                        }`}
-                      >
-                        {m}
-                      </button>
-                    ))}
-                  </div>
-
-                  <input
-                    type="text"
+                  <select
                     value={missionNoteInput}
                     onChange={e => setMissionNoteInput(e.target.value)}
-                    placeholder="พิมพ์ชื่อภารกิจ หรือเลือกจากปุ่มด้านบน..."
-                    className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    maxLength={30}
-                    autoFocus
-                  />
+                    className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
+                  >
+                    {presetMissions.map(mission => (
+                      <option key={mission} value={mission}>
+                        {mission}
+                      </option>
+                    ))}
+                  </select>
                   <p className="text-[11px] text-slate-400">
-                    * เมื่อกดยืนยัน ปุ่ม toggle จะเปลี่ยนเป็นสีแดง และมีข้อความกำกับเหนือปุ่มตามที่ท่านระบุ
+                    * เมื่อกดยืนยัน ปุ่ม toggle จะเปลี่ยนเป็นสีแดง และมีข้อความกำกับเหนือปุ่มตามที่ท่านเลือก
                   </p>
                 </div>
               ) : (
@@ -650,12 +659,17 @@ export const DivisionRosterCalendar: React.FC<DivisionRosterCalendarProps> = ({
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
                       แก้ไขชื่อภารกิจ:
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={missionNoteInput}
                       onChange={e => setMissionNoteInput(e.target.value)}
-                      className="w-full text-xs p-2 rounded-lg border border-slate-300"
-                    />
+                      className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
+                    >
+                      {presetMissions.map(mission => (
+                        <option key={mission} value={mission}>
+                          {mission}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               )}

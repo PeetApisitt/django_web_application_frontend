@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { BookingRequest, BookingRequestItem } from '../types';
 import { canUserReviewDivision } from '../services/bookingService';
+import { formatThaiDateRange } from '../utils/dateFormatter';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -218,8 +219,7 @@ export const ReviewQueue: React.FC<ReviewQueueProps> = ({ onSelectBooking }) => 
                         <div className="flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                           <span className="font-medium text-slate-800">
-                            วันที่: {booking.booking_date}
-                            {booking.end_date && booking.end_date !== booking.booking_date ? ` ถึง ${booking.end_date}` : ''}
+                            วันที่: {formatThaiDateRange(booking.booking_date, booking.end_date, ' ถึง ')}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">

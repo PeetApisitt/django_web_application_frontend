@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { BookingRequest } from '../types';
 import { STATUS_LABELS, canUserReviewDivision } from '../services/bookingService';
+import { formatThaiDate, formatThaiDateRange } from '../utils/dateFormatter';
 import {
   Search,
   Filter,
@@ -269,7 +270,7 @@ export const BookingList: React.FC<BookingListProps> = ({
                           </span>
                         )}
                         <span className="text-xs text-slate-400">
-                          {new Date(booking.created_at).toLocaleDateString('th-TH')}
+                          {formatThaiDate(booking.created_at)}
                         </span>
                       </div>
 
@@ -294,10 +295,7 @@ export const BookingList: React.FC<BookingListProps> = ({
                         <div className="flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                           <span className="font-medium text-slate-700">
-                            {booking.booking_date}
-                            {booking.end_date && booking.end_date !== booking.booking_date
-                              ? ` - ${booking.end_date}`
-                              : ''}
+                            {formatThaiDateRange(booking.booking_date, booking.end_date)}
                           </span>
                         </div>
 

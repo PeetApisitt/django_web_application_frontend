@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { CreateBookingRequestInput, Employee } from '../types';
+import { formatThaiDate } from '../utils/dateFormatter';
 import {
   X,
   Calendar,
@@ -16,6 +17,11 @@ import {
   Clock,
   Sparkles
 } from 'lucide-react';
+
+const PURPOSE_OPTIONS = [
+  "ไปราชการ",
+  "ปฏิบัติงานพิเศษ",
+];
 
 interface CreateBookingModalProps {
   isOpen: boolean;
@@ -46,7 +52,7 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
 
   const [requestingDivId, setRequestingDivId] = useState<number>(currentUser?.division_id || 1);
   const [sourceDivId, setSourceDivId] = useState<number>(1);
-  const [purpose, setPurpose] = useState<string>('');
+  const [purpose, setPurpose] = useState<string>(PURPOSE_OPTIONS[0]);
   const [bookingDate, setBookingDate] = useState<string>(defaultStartDate);
   const [endDate, setEndDate] = useState<string>('');
   const [selectedEmployees, setSelectedEmployees] = useState<{ employee_code: string; employee_name_snapshot: string; position?: string }[]>([]);
@@ -93,7 +99,7 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
     // Availability check
     const check = isEmployeeAvailable(emp.employee_code, bookingDate, endDate || null);
     if (!check.available) {
-      if (!window.confirm(`คำเตือน: กำลังพล ${emp.full_name} (${emp.employee_code}) ติดการจองแล้วในวันที่ ${check.conflictDate} หากส่งคำขอระบบจะปฏิเสธการจองซ้ำ คุณต้องการเพิ่มหรือไม่?`)) {
+      if (!window.confirm(`คำเตือน: กำลังพล ${emp.full_name} (${emp.employee_code}) ติดการจองแล้วในวันที่ ${formatThaiDate(check.conflictDate)} หากส่งคำขอระบบจะปฏิเสธการจองซ้ำ คุณต้องการเพิ่มหรือไม่?`)) {
         return;
       }
     }
@@ -270,6 +276,11 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
                 className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 required
               />
+              {bookingDate && (
+                <p className="text-[11px] text-slate-500 mt-1">
+                  วันที่เลือก (พ.ศ.): <span className="font-semibold text-slate-700">{formatThaiDate(bookingDate, { dateStyle: 'long' })}</span>
+                </p>
+              )}
             </div>
 
             <div>
@@ -284,22 +295,31 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
                 onChange={e => setEndDate(e.target.value)}
                 className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
+              {endDate && (
+                <p className="text-[11px] text-slate-500 mt-1">
+                  วันสิ้นสุด (พ.ศ.): <span className="font-semibold text-slate-700">{formatThaiDate(endDate, { dateStyle: 'long' })}</span>
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Purpose textarea */}
+          {/* Purpose select dropdown */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               เหตุผลและวัตถุประสงค์ในการขอใช้พนักงาน <span className="text-rose-500">*</span>
             </label>
-            <textarea
+            <select
               value={purpose}
               onChange={e => setPurpose(e.target.value)}
-              placeholder="ระบุภารกิจ วัตถุประสงค์ และรายละเอียดงานที่ต้องการให้กำลังพลปฏิบัติ..."
-              rows={3}
-              className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full text-xs p-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer"
               required
-            />
+            >
+              {PURPOSE_OPTIONS.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Personnel Selection Section */}
@@ -370,7 +390,7 @@ export const CreateBookingModal: React.FC<CreateBookingModalProps> = ({
                       <div className="flex items-center gap-2">
                         {!availability.available ? (
                           <span className="text-[10px] px-2 py-0.5 rounded bg-rose-100 text-rose-700 border border-rose-200 font-medium">
-                            ติดจอง ({availability.conflictDate})
+                            ติดจอง ({formatThaiDate(availability.conflictDate)})
                           </span>
                         ) : (
                           <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">

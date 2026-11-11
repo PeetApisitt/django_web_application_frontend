@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { BookingRequest, BookingRequestItem } from '../types';
 import { STATUS_LABELS, canUserReviewDivision } from '../services/bookingService';
+import { formatThaiDateRange, formatThaiDateTime } from '../utils/dateFormatter';
 import {
   X,
   Calendar,
@@ -150,7 +151,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 )}
               </div>
               <p className="text-xs text-slate-400">
-                สร้างเมื่อ {new Date(booking.created_at).toLocaleString('th-TH')}
+                สร้างเมื่อ {formatThaiDateTime(booking.created_at)}
               </p>
             </div>
           </div>
@@ -207,16 +208,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <Calendar className="w-4 h-4 text-indigo-500" />
                 <span className="font-medium text-slate-600">ช่วงวันที่ต้องการใช้งาน:</span>
                 <span className="font-semibold text-slate-900">
-                  {booking.booking_date}
-                  {booking.end_date && booking.end_date !== booking.booking_date
-                    ? ` ถึง ${booking.end_date}`
-                    : ' (1 วัน)'}
+                  {formatThaiDateRange(booking.booking_date, booking.end_date, ' ถึง ')}
+                  {!booking.end_date || booking.end_date === booking.booking_date ? ' (1 วัน)' : ''}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-slate-500">
                 <Clock className="w-4 h-4 text-slate-400" />
                 <span className="font-medium text-slate-600">อัปเดตล่าสุด:</span>
-                <span className="text-slate-700">{new Date(booking.updated_at).toLocaleString('th-TH')}</span>
+                <span className="text-slate-700">{formatThaiDateTime(booking.updated_at)}</span>
               </div>
               {booking.approved_by_name && (
                 <div className="flex items-center gap-2 text-slate-500">
@@ -285,7 +284,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                           {item.reviewed_by_name && (
                             <div className="text-[11px] text-slate-400 mt-1">
                               พิจารณาโดย: {item.reviewed_by_name}{' '}
-                              {item.reviewed_at ? `(${new Date(item.reviewed_at).toLocaleString('th-TH')})` : ''}
+                              {item.reviewed_at ? `(${formatThaiDateTime(item.reviewed_at)})` : ''}
                             </div>
                           )}
                         </div>

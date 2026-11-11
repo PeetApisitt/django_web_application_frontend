@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { DivisionRosterCalendar } from './DivisionRosterCalendar';
+import { formatThaiDate, formatThaiDateTime } from '../utils/dateFormatter';
 import {
   Calendar as CalendarIcon,
   Search,
@@ -136,6 +137,11 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                 onChange={e => setCheckDate(e.target.value)}
                 className="w-full text-xs p-2 rounded-lg border border-indigo-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
+              {checkDate && (
+                <p className="text-[11px] text-indigo-700 mt-1">
+                  วันที่เลือก: <span className="font-semibold">{formatThaiDate(checkDate, { dateStyle: 'long' })}</span>
+                </p>
+              )}
             </div>
 
             <div className="text-xs pt-1 border-t border-indigo-200/80 space-y-1">
@@ -223,10 +229,10 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                     <span className="text-xs font-bold text-slate-900">
-                      วันที่ {new Date(dateStr).toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                      วันที่ {formatThaiDate(dateStr, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </span>
                     <span className="text-[11px] font-mono text-slate-500 bg-slate-200/60 px-1.5 py-0.2 rounded">
-                      {dateStr}
+                      {formatThaiDate(dateStr)}
                     </span>
                   </div>
                   <span className="text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200">
@@ -264,7 +270,7 @@ export const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                           <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
                             <span>สังกัด: {res.employee?.division_name} ({res.employee?.division_code})</span>
                             <span>•</span>
-                            <span>บันทึกเมื่อ: {new Date(res.created_at).toLocaleTimeString('th-TH')}</span>
+                            <span>บันทึกเมื่อ: {formatThaiDateTime(res.created_at)}</span>
                             {res.is_direct_admin_booking && (
                               <span className="text-emerald-700 font-medium bg-emerald-50 px-1 rounded">
                                 จองโดยแอดมินกองงาน
